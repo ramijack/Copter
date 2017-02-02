@@ -1,9 +1,7 @@
 ﻿# importing modules
-from collections import OrderedDict
 
 import pygame
 from pygame.locals import *
-from motor import motor
 from copter import Copter
 
 
@@ -29,7 +27,7 @@ for title in motor1_titles:
     screen.blit(font_render(titleFont, title), (y, 20))
     y += 200
 
-arrowSubSurface = screen.subsurface(pygame.Rect(0, 100, 800, 350))
+arrowSubSurface = screen.subsurface(pygame.Rect(0, 100, 900, 350))
 
 upArrowCounter = 0
 downArrowCounter = 0
@@ -39,10 +37,10 @@ rightArrowCounter = 0
 pygame.key.set_repeat(500, 30)
 # main loop which displays the pressed keys on the screen
 going = True
-increase = True
+accelerate = True
 counter = 0
 
-keys = OrderedDict([('Left', ''), ('Up', ''), ('Right', ''), ('Down', '')])
+keys = copter.get_keys()
 
 while going:
     events = pygame.event.get()
@@ -51,51 +49,29 @@ while going:
             if e.key == K_ESCAPE:
                 going = False
             elif e.key == K_a:
-                increase = False
+                accelerate = False
             elif e.key == K_s:
-                increase = True
-            elif e.key == K_UP and increase:
-                upArrowCounter += 1
-                keys['Up'] = "Top........ %s" % upArrowCounter
-                Rotors[0].increaseW()
-            elif e.key == K_UP and not increase:
-                upArrowCounter -= 1
-                keys['Up'] = "Top........ %s" % upArrowCounter
-                Rotors[0].decreaseW()
-            elif e.key == K_DOWN and increase:
-                downArrowCounter += 1
-                keys['Down'] = "Down........ %s" % downArrowCounter
-                Rotors[1].increaseW()
-            elif e.key == K_DOWN and not increase:
-                downArrowCounter -= 1
-                keys['Down'] = "Down........ %s" % downArrowCounter
-                Rotors[1].decreaseW()
-            elif e.key == K_LEFT and increase:
-                leftArrowCounter += 1
-                keys['Left'] = "Left........ %s" % leftArrowCounter
-                Rotors[2].increaseW()
-            elif e.key == K_LEFT and not increase:
-                leftArrowCounter -= 1
-                keys['Left'] = "Left........ %s" % leftArrowCounter
-                Rotors[2].decreaseW()
-            elif e.key == K_RIGHT and increase:
-                rightArrowCounter += 1
-                keys['Right'] = "Right........ %s" % rightArrowCounter
-                Rotors[3].increaseW()
-            elif e.key == K_RIGHT and not increase:
-                rightArrowCounter -= 1
-                keys['Right'] = "Right........ %s" % rightArrowCounter
-                Rotors[3].decreaseW()
+                accelerate = True
+            elif e.key == K_r:
+                copter.reset_acceleration()
+            elif e.key == K_UP:
+                copter.change_propeller_rotation_speed(0, accelerate)
+            elif e.key == K_DOWN:
+                copter.change_propeller_rotation_speed(1, accelerate)
+            elif e.key == K_LEFT:
+                copter.change_propeller_rotation_speed(2, accelerate)
+            elif e.key == K_RIGHT:
+                copter.change_propeller_rotation_speed(3, accelerate)
             elif e.key == K_LCTRL:
-                Copter.gain_altitude()
-                for key in keys:
-                    keys[key] = key + "........ %s" % counter
-                counter += 1
+                copter.gain_altitude()
+                # for key in keys:
+                #     keys[key] = key + "........ %s" % counter
+                # counter += 1
             elif e.key == K_LALT:
-                Copter.decline_altitude()
-                for key in keys:
-                    keys[key] = key + "........ %s" % counter
-                counter -= 1
+                copter.decline_altitude()
+                # for key in keys:
+                #     keys[key] = key + "........ %s" % counter
+                # counter -= 1
 
             arrowSubSurface.fill((255, 255, 255))
             x = 20
@@ -105,4 +81,5 @@ while going:
                 x += 200
         elif e.type == QUIT:
             going = False
+
         pygame.display.update()

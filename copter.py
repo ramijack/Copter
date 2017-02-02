@@ -1,12 +1,9 @@
-from motor import motor
+# importing modules
+import motor
 from collections import OrderedDict
 
 TEXT_SEPARATOR = '..........'
-TEXT_PROPELLER = 'Propeller'
-LEFT_PROPELLER = 0
-TOP_PROPELLER = 1
-RIGHT_PROPELLER = 2
-DOWN_PROPELLER = 3
+TEXT_PROPELLER = 'Prop'
 
 
 class Copter(object):
@@ -15,20 +12,15 @@ class Copter(object):
     def __init__(self, name, no_of_propellers):
         self.name = name
         self.propellers = []
-        self.__upArrowCounter = 0
-        self.__downArrowCounter = 0
-        self.__leftArrowCounter = 0
-        self.__rightArrowCounter = 0
-
+        self.__counters = [0] * no_of_propellers
         props = []
-        for index in range(1, no_of_propellers + 1):
-            props.append((TEXT_PROPELLER + '-' + index, ''))
-
-        self.__keys = OrderedDict(props)
-        for i in range(1, no_of_propellers + 1):
-            propeller_instance = motor('Propeller' + str(i), 17, simulation=False)
+        for index in range(0, no_of_propellers):
+            propeller_instance = motor.motor(TEXT_PROPELLER + str(index), 17, simulation=False)
             propeller_instance.setW(0)
             self.propellers.append(propeller_instance)
+            props.append((TEXT_PROPELLER + '-' + str(index), ''))
+
+        self.__keys = OrderedDict(props)
 
     def get_propellers(self):
         return self.propellers
@@ -38,9 +30,37 @@ class Copter(object):
             propeller.setW(0)
             propeller.increaseW()
 
+        for index in range(0, len(self.propellers)):
+            self.__counters[index] += 1
+            self.__keys[TEXT_PROPELLER + '-' + str(index)] = TEXT_PROPELLER + '-' + str(index) + TEXT_SEPARATOR + \
+                "%s" % self.__counters[index]
+
     def decline_altitude(self):
         for propeller in self.propellers:
             propeller.decreaseW()
 
+        for index in range(0, len(self.propellers)):
+            self.__counters[index] -= 1
+            self.__keys[TEXT_PROPELLER + '-' + str(index)] = TEXT_PROPELLER + '-' + str(index) + TEXT_SEPARATOR + \
+                "%s" % self.__counters[index]
+
     def get_keys(self):
         return self.__keys
+
+    def change_propeller_rotation_speed(self, index, accelerate):
+        if accelerate:
+            self.propellers[index].increaseW()
+            self.__counters[index] += 1
+        else:
+            self.propellers[index].decreaseW()
+            self.__counters[index] -= 1
+
+        self.__keys[TEXT_PROPELLER + '-' + str(index)] = TEXT_PROPELLER + '-' + str(index) + TEXT_SEPARATOR + \
+            "%s" % self.__counters[index]
+
+    def reset_acceleration(self):
+        for index in range(0, len(self.__counters)):
+            self.__counters[index] = 0
+
+        for key in self.__keys:
+            self.__keys[key] = ''
