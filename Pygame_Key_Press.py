@@ -1,5 +1,4 @@
 ﻿# importing modules
-
 import pygame
 from pygame.locals import *
 from copter import Copter
@@ -28,18 +27,10 @@ for title in motor1_titles:
     y += 200
 
 arrowSubSurface = screen.subsurface(pygame.Rect(0, 100, 900, 350))
-
-upArrowCounter = 0
-downArrowCounter = 0
-leftArrowCounter = 0
-rightArrowCounter = 0
-
 pygame.key.set_repeat(500, 30)
 # main loop which displays the pressed keys on the screen
 going = True
 accelerate = True
-counter = 0
-
 keys = copter.get_keys()
 
 while going:
@@ -64,14 +55,8 @@ while going:
                 copter.change_propeller_rotation_speed(3, accelerate)
             elif e.key == K_LCTRL:
                 copter.gain_altitude()
-                # for key in keys:
-                #     keys[key] = key + "........ %s" % counter
-                # counter += 1
             elif e.key == K_LALT:
                 copter.decline_altitude()
-                # for key in keys:
-                #     keys[key] = key + "........ %s" % counter
-                # counter -= 1
 
             arrowSubSurface.fill((255, 255, 255))
             x = 20
