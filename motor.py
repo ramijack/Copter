@@ -24,7 +24,7 @@ class motor(object):
 
 
     def __init__(self, name, pin, kv=1400, WMin=0, WMax=100, debug=True, simulation=True):
-	print('sanju baba:: ', pin)
+	print('Configured Pin:  ', pin)
         self.name = name
         self.powered = False
         self.simulation = simulation

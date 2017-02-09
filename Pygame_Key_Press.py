@@ -15,9 +15,9 @@ pygame.init()
 screen = pygame.display.set_mode((1000, 650), 0, 24)
 screen.fill((255, 255, 255))
 pygame.display.set_caption("Motor Key Press Test")
-titleFont = pygame.font.SysFont("Copperplate Gothic", 20)
+titleFont = pygame.font.SysFont("Courier New", 20)
+descriptionFont = pygame.font.SysFont("Courier New", 15)
 titleFont.set_bold(1)
-descriptionFont = pygame.font.SysFont("Copperplate Gothic", 20)
 
 motor1_titles = ["Left Motor", "Top Motor", "Right Motor", "Bottom Motor"]
 y = 20
@@ -61,7 +61,7 @@ while going:
             arrowSubSurface.fill((255, 255, 255))
             x = 20
             for key in keys.keys():
-                renderedText = font_render(titleFont, keys[key])
+                renderedText = font_render(descriptionFont, keys[key])
                 arrowSubSurface.blit(renderedText, (x, 20))
                 x += 200
         elif e.type == QUIT:
